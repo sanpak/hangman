@@ -65,10 +65,11 @@ class ComputerPlayer
   end
 
   def handle_response(letter,idx)
-    puts "______________handle_response_____________________"
-    candidate_words.select! do |word|
-      idx.all? { |position| word[position] == letter }
-    end
+    # puts "______________handle_response_____________________"
+    # candidate_words.select! do |word|
+    #   idx.all? { |position| word[position] == letter }
+    # end
+    
     # puts "_____________handle_response_______________"
     # p letter
     # p idx
