@@ -8,7 +8,7 @@ class Hangman
   end
 
   def take_turn
-    puts "_________take_turn____________"
+
     # puts "what's your guess?"
     # player_guess = gets.chomp
     @guesser.guess
@@ -18,16 +18,14 @@ class Hangman
   end
 
   def setup
-    puts "__________setup_____________"
-    p @referee.pick_secret_word
-    p @guesser.register_secret_length(@referee.pick_secret_word)
-    p @board = Array.new(@referee.pick_secret_word)
-    p @referee.check_guess(@guesser.guess)
+    @referee.pick_secret_word
+    @guesser.register_secret_length(@referee.pick_secret_word)
+    @board = Array.new(@referee.pick_secret_word)
+    @referee.check_guess(@guesser.guess)
   end
 
   def update_board
-    puts "_______________update_board____________"
-    p @board
+    @board
   end
 
 end
@@ -36,10 +34,10 @@ class HumanPlayer
 end
 
 class ComputerPlayer
-  attr_accessor :secret_word
+  attr_accessor :secret_word, :dictionary, :secret_word, :candidate_words
   def initialize(dictionary)
+    @dictionary = dictionary
     @secret_word = dictionary[rand(dictionary.length)]
-    p @secret_word
     # @secret_word = contents[rand(contents.length)].chomp
   end
 
@@ -56,24 +54,24 @@ class ComputerPlayer
   end
 
   def guess(board)
-    # puts "________letter__________"
-    p board[1]
+    # board.length
     #  player.register_secret_length(6)
   end
 
-  def candidate_words
-    puts "_________________candidate_WORDS___________"
-    candidate_words = []
-    candidate_words << self.secret_word
-    p candidate_words
-  end
-
   def register_secret_length(length)
-
-
+    #don't need to do anything?
+    puts "The length of the secret word is #{length}"
+    @candidate_words = @dictionary.select { |word| word.length == pick_secret_word }
   end
 
-  def handle_response(letter,array)
+  def handle_response(letter,idx)
+    puts "______________handle_response_____________________"
+    candidate_words.select! do |word|
+      idx.all? { |position| word[position] == letter }
+    end
+    # puts "_____________handle_response_______________"
+    # p letter
+    # p idx
   end
 
 
