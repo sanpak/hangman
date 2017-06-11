@@ -53,6 +53,14 @@ class ComputerPlayer
     result
   end
 
+  def check_word(word,letter)
+    pos_array = []
+    word.chars.each_with_index do |alphabet,idx|
+      pos_array << idx if alphabet == letter
+    end
+    return pos_array
+  end
+
   def guess(board)
     # board.length
     #  player.register_secret_length(6)
@@ -65,14 +73,7 @@ class ComputerPlayer
   end
 
   def handle_response(letter,idx)
-    # puts "______________handle_response_____________________"
-    # candidate_words.select! do |word|
-    #   idx.all? { |position| word[position] == letter }
-    # end
-    
-    # puts "_____________handle_response_______________"
-    # p letter
-    # p idx
+    candidate_words.select! { |word| check_word(word,letter) == idx }
   end
 
 
