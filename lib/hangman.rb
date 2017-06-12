@@ -72,10 +72,12 @@ class ComputerPlayer
         letter_freq_hash[letter] += 1
       end
     end
+    puts "____________guess______________"
+    p board
     board.each do |ch|
       letter_freq_hash.delete(ch)
     end
-      freq_letter = letter_freq_hash.sort_by { |k,v| v }[-1][0]
+      letter_freq_hash.sort_by { |k,v| v }[-1][0]
   end
 
   def register_secret_length(length)
