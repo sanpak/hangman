@@ -31,10 +31,18 @@ class Hangman
 end
 
 class HumanPlayer
+  attr_accessor :secret_word, :dictionary, :length, :candidate_words
+  def initialize(secret_word_length)
+    contents = File.readlines(dictionary.txt).chomp
+    contents.reject! { |word| word.length != secret_word_length }
+    @secret_word = contents[rand(contents.length)]
+  end
+
+
 end
 
 class ComputerPlayer
-  attr_accessor :secret_word, :dictionary, :secret_word, :candidate_words
+  attr_accessor :secret_word, :dictionary, :candidate_words
   def initialize(dictionary)
     @dictionary = dictionary
     @secret_word = dictionary[rand(dictionary.length)]
