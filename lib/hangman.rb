@@ -62,8 +62,8 @@ class ComputerPlayer
   end
 
   def guess(board)
-    # board.length
     #  player.register_secret_length(6)
+    ("a".."z").to_a[rand(("a".."z").to_a.length)]
   end
 
   def register_secret_length(length)
