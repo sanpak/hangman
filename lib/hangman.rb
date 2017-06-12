@@ -62,18 +62,30 @@ class ComputerPlayer
   end
 
   def guess(board)
-    #  player.register_secret_length(6)
-    ("a".."z").to_a[rand(("a".."z").to_a.length)]
+    register_secret_length(@secret_word.length)
+    random_guess = ("a".."z").to_a[rand(("a".."z").to_a.length)]
+    # check_guess(random_guess)
+    # handle_response(random_guess,check_guess(random_guess))
+    letter_freq_hash = Hash.new(0)
+    candidate_words.each do |word|
+      word.chars.each do |letter|
+        letter_freq_hash[letter] += 1
+      end
+    end
+    board.each do |ch|
+      letter_freq_hash.delete(ch)
+    end
+      freq_letter = letter_freq_hash.sort_by { |k,v| v }[-1][0]
   end
 
   def register_secret_length(length)
-    #don't need to do anything?
-    puts "The length of the secret word is #{length}"
-    @candidate_words = @dictionary.select { |word| word.length == pick_secret_word }
+    @length = length
+    @candidate_words = @dictionary.select { |word| word.length == @length }
   end
 
   def handle_response(letter,idx)
     candidate_words.select! { |word| check_word(word,letter) == idx }
+    candidate_words.reject! { |word| word.include?(letter) } if idx.empty?
   end
 
 
