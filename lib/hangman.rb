@@ -17,6 +17,40 @@ class Hangman
     # puts "Secret word: #{@board}"
   end
 
+  def take_turn
+    guess = @guesser.guess
+    @referee.check_guess(guess)
+    update_board
+  end
+
+  def play
+    print_board
+  end
+
+  def over?
+    if 
+  end
+
+  private
+
+  def update_board
+    # update_board = ""
+    # # @board.each do |el|
+    # #   update_board << "_" if el == nil
+    # #   update_board << el
+    # # end
+    #   puts "Secret word: #{update_board}"
+  end
+
+  def print_board
+    update_board = ""
+    @board.each do |el|
+      update_board << "_" if el == nil
+      update_board << el
+    end
+      puts "Secret word: #{update_board}"
+  end
+
 end
 
 class HumanPlayer
@@ -47,6 +81,10 @@ class ComputerPlayer
 
   def register_secret_length(length)
     @length = length
+  end
+
+  def guess
+    ("a".."z").to_a.sample
   end
 
 end
