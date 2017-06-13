@@ -1,8 +1,21 @@
 class Hangman
   attr_reader :guesser, :referee, :board
   def initialize(players)
+    @guesser = players[:guesser]
+    @referee = players[:referee]
+    @board = board
   end
 
+  def setup
+    length = @referee.pick_secret_word
+    @guesser.register_secret_length(length)
+  end
+
+  def board
+    length = @referee.pick_secret_word
+    @board = Array.new(length)
+    # puts "Secret word: #{@board}"
+  end
 
 end
 
@@ -32,5 +45,8 @@ class ComputerPlayer
     found_letters_idx
   end
 
+  def register_secret_length(length)
+    @length = length
+  end
 
 end
