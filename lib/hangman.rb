@@ -18,42 +18,60 @@ class Hangman
   end
 
   def take_turn
-    guess = @guesser.guess
-    @referee.check_guess(guess)
+    @guess = @guesser.guess
+    @check_result = @referee.check_guess(@guess)
     update_board
+    @guesser.handle_response
   end
 
   def play
-    print_board
+    print "Secret_word: "
+    until over?
+      print "> "
+      take_turn
+    end
   end
-
+  #
   def over?
-    if 
+    return true if @board.all? { |el| el != nil }
+    return false
   end
 
   private
 
   def update_board
-    # update_board = ""
-    # # @board.each do |el|
-    # #   update_board << "_" if el == nil
-    # #   update_board << el
-    # # end
-    #   puts "Secret word: #{update_board}"
+    @check_result.each do |idx|
+      @board[idx] = @guess
+    end
+    puts print_board
   end
 
   def print_board
-    update_board = ""
+    board_display = ""
     @board.each do |el|
-      update_board << "_" if el == nil
-      update_board << el
+      board_display << (el.nil? ? "_" : el)
     end
-      puts "Secret word: #{update_board}"
+    board_display
   end
 
 end
 
 class HumanPlayer
+  attr_accessor :guess
+  def initialize
+    # @guess = guess
+    #don't need this so it go straight to the game.
+    #no exra enter
+  end
+
+  def guess
+    gets.chomp
+  end
+
+
+
+
+
 
 
 
@@ -61,10 +79,17 @@ class HumanPlayer
 end
 
 class ComputerPlayer
+  attr_accessor :candidate_words
+  def self.dictionary
+    contents = File.readlines("dictionary.txt")
+    @secret_word = contents.sample.chomp
+  end
 
   def initialize(dictionary)
     @dictionary = dictionary
     @secret_word = @dictionary.sample
+    # contents = File.readlines(dictionary)
+    # @secret_word = contents.sample.chomp
   end
 
   def pick_secret_word
@@ -81,10 +106,52 @@ class ComputerPlayer
 
   def register_secret_length(length)
     @length = length
+     @candidate_words = @dictionary.select { |word| word.length == @length }
   end
 
-  def guess
+  def guess(board)
     ("a".."z").to_a.sample
+    joined_word = @candidate_words.join
+    counter = 0
+    most_common_letter = ""
+    joined_word.chars.each do |el|
+      if joined_word.count(el) > counter && board.include?(el) == false
+        counter = joined_word.count(el)
+        most_common_letter = el
+      end
+    end
+    most_common_letter
   end
 
+  def check_word(word,letter)
+    idx_array = []
+    word.chars.each_with_index do |el,idx|
+      idx_array << idx if el == letter
+    end
+    idx_array
+  end
+
+  def handle_response(guess_letter,positions)
+    @candidate_words.reject! do |word|
+      pos_idx = []
+      word.chars.each_with_index do |el,idx|
+        pos_idx << idx if el == guess_letter
+      end
+      pos_idx != positions
+    end
+    # puts "__________handle response_____________"
+    @candidate_words
+  end
+
+
+end
+
+
+if __FILE__ == $PROGRAM_NAME
+  players = {
+    guesser: HumanPlayer.new,
+    referee: ComputerPlayer.new("dictionary.txt")
+  }
+  game = Hangman.new(players)
+  game.play
 end
