@@ -64,16 +64,38 @@ class HumanPlayer
     #no exra enter
   end
 
-  def guess
+  def guess(board)
+    board_display = ""
+    board.each do |el|
+      board_display << (el.nil? ? "_" : el)
+    end
+    puts "#{board_display}"
     gets.chomp
   end
 
+  # def register_secret_length(length)
+  #   length
+  # end
 
+  def handle_response
+  end
 
+  def pick_secret_word
+    puts "Think of a secret word"
+    length = gets.chomp.to_i
+  end
 
+  def check_guess(letter)
+    puts "The computer has guessed the letter: #{letter}"
+    puts "what position: ex.0,1,2"
+    found_letters_idx = gets.chomp.split(",").map(&:to_i)
 
-
-
+    # found_letters_idx = []
+    # @secret_word.chars.each_with_index do |el,idx|
+    #   found_letters_idx << idx if el == letter
+    # end
+    # found_letters_idx
+  end
 
 
 end
