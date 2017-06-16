@@ -6,30 +6,33 @@ class Hangman
     @board = board
   end
 
-  def setup
-    length = @referee.pick_secret_word
-    @guesser.register_secret_length(length)
-  end
-
   def board
-    length = @referee.pick_secret_word
-    @board = Array.new(length)
+    @board
+    # @board = Array.new(length)
     # puts "Secret word: #{@board}"
   end
 
+  def setup
+    length = @referee.pick_secret_word
+    @guesser.register_secret_length(length)
+    @board = Array.new(length)
+  end
+
   def take_turn
-    @guess = @guesser.guess
+    @guess = @guesser.guess(@board)
     @check_result = @referee.check_guess(@guess)
     update_board
-    @guesser.handle_response
+    @guesser.handle_response(@guess,@check_result)
   end
 
   def play
+    setup
     print "Secret_word: "
     until over?
       print "> "
       take_turn
     end
+    puts "Secret word was #{@board.join}"
   end
   #
   def over?
@@ -43,7 +46,6 @@ class Hangman
     @check_result.each do |idx|
       @board[idx] = @guess
     end
-    puts print_board
   end
 
   def print_board
@@ -64,6 +66,9 @@ class HumanPlayer
     #no exra enter
   end
 
+  def register_secret_length(length)
+  end
+
   def guess(board)
     board_display = ""
     board.each do |el|
@@ -77,12 +82,12 @@ class HumanPlayer
   #   length
   # end
 
-  def handle_response
+  def handle_response(guess,check_guess)
   end
 
   def pick_secret_word
     puts "Think of a secret word"
-    length = gets.chomp.to_i
+    gets.chomp.to_i
   end
 
   def check_guess(letter)
@@ -108,10 +113,17 @@ class ComputerPlayer
   end
 
   def initialize(dictionary)
-    @dictionary = dictionary
-    @secret_word = @dictionary.sample
-    # contents = File.readlines(dictionary)
-    # @secret_word = contents.sample.chomp
+    #following two lines make this pass the r spec
+    # @dictionary = dictionary
+    # @secret_word = @dictionary.sample
+
+    #the following make this game playable
+    #make this game playable
+    @dictionary = File.readlines(dictionary)
+    @dictionary = @dictionary.map { |word| word.chomp }
+    # @secret_word = @dictionary.sample
+    contents = File.readlines(dictionary)
+    @secret_word = contents.sample.chomp
   end
 
   def pick_secret_word
@@ -170,10 +182,23 @@ end
 
 
 if __FILE__ == $PROGRAM_NAME
-  players = {
-    guesser: HumanPlayer.new,
-    referee: ComputerPlayer.new("dictionary.txt")
-  }
+  puts "Do you want to be a guesser or referee? (g/r)"
+  ans = gets.chomp.downcase
+  if ans == "g"
+    players = {
+      referee: ComputerPlayer.new("dictionary.txt"),
+      guesser: HumanPlayer.new
+    }
+  elsif ans == "r"
+    players = {
+      guesser: ComputerPlayer.new("dictionary.txt"),
+      referee: HumanPlayer.new
+    }
+  else
+    puts "invalid input"
+  end
+
   game = Hangman.new(players)
+
   game.play
 end
