@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Hangman
   attr_reader :guesser, :referee, :board
   def initialize(players)
@@ -19,6 +21,7 @@ class Hangman
   end
 
   def take_turn
+    # debugger
     @guess = @guesser.guess(@board)
     @check_result = @referee.check_guess(@guess)
     update_board
@@ -92,8 +95,8 @@ class HumanPlayer
 
   def check_guess(letter)
     puts "The computer has guessed the letter: #{letter}"
-    puts "what position: ex.0,1,2"
-    found_letters_idx = gets.chomp.split(",").map(&:to_i)
+    puts "what position: ex.1,2. Press Enter if there is no match."
+    found_letters_idx = gets.chomp.split(",").map { |el| el.to_i - 1 }
 
     # found_letters_idx = []
     # @secret_word.chars.each_with_index do |el,idx|
@@ -144,6 +147,7 @@ class ComputerPlayer
   end
 
   def guess(board)
+    # debugger
     ("a".."z").to_a.sample
     joined_word = @candidate_words.join
     counter = 0
